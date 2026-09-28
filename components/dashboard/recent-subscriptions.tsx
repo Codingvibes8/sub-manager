@@ -7,9 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export function RecentSubscriptions({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <Card className={className} {...props}>
+    <Card className={`glass-panel border-emerald-500/20 ${className}`} {...props}>
         <CardHeader>
-            <CardTitle>Recent Renewals</CardTitle>
+            <CardTitle className="text-emerald-700 dark:text-emerald-300">Recent Renewals</CardTitle>
             <CardDescription>
                 You have 3 subscriptions renewing this week.
             </CardDescription>

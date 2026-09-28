@@ -58,9 +58,9 @@ interface OverviewChartProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function OverviewChart({ className, ...props }: OverviewChartProps) {
   return (
-    <Card className={className} {...props}>
+    <Card className={`glass-panel border-emerald-500/20 ${className}`} {...props}>
       <CardHeader>
-        <CardTitle>Overview</CardTitle>
+        <CardTitle className="text-emerald-700 dark:text-emerald-300">Overview</CardTitle>
         <CardDescription>
           Monthly subscription spending for the current year.
         </CardDescription>
@@ -68,6 +68,12 @@ export function OverviewChart({ className, ...props }: OverviewChartProps) {
       <CardContent className="pl-2">
         <ResponsiveContainer width="100%" height={350}>
           <BarChart data={data}>
+            <defs>
+              <linearGradient id="emeraldGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#10b981" stopOpacity={1} />
+                <stop offset="100%" stopColor="#0d9488" stopOpacity={0.8} />
+              </linearGradient>
+            </defs>
             <XAxis
               dataKey="name"
               stroke="#888888"
@@ -84,9 +90,9 @@ export function OverviewChart({ className, ...props }: OverviewChartProps) {
             />
             <Bar
               dataKey="total"
-              fill="currentColor"
+              fill="url(#emeraldGradient)"
               radius={[4, 4, 0, 0]}
-              className="fill-primary"
+              className="transition-all duration-300 hover:opacity-80"
             />
           </BarChart>
         </ResponsiveContainer>

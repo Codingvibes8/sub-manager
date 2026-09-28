@@ -56,13 +56,13 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" className="border-emerald-500/20" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20">
                   <LayoutDashboard className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -95,9 +95,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <div className="p-4">
-            <div className="rounded-lg bg-muted p-4 text-xs">
-                <p className="font-semibold">Pro Plan</p>
-                <p className="text-muted-foreground">Expires in 12 days</p>
+            <div className="rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 p-4 text-xs shadow-lg backdrop-blur-md">
+                <p className="font-semibold text-emerald-700 dark:text-emerald-300">Pro Plan</p>
+                <p className="text-emerald-600/70 dark:text-emerald-400/70 mt-1">Expires in 12 days</p>
             </div>
         </div>
       </SidebarFooter>

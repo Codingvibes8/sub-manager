@@ -35,76 +35,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import { useSubscriptions, type Subscription } from "@/components/subscriptions-provider"
+import { EditSubscriptionDialog } from "@/components/dashboard/edit-subscription-dialog"
 
-const data: Subscription[] = [
-  {
-    id: "m5gr84i9",
-    name: "Netflix Premium",
-    status: "active",
-    price: 19.99,
-    category: "Entertainment",
-    renewalDate: "2024-04-15",
-  },
-  {
-    id: "3u1re74n",
-    name: "Spotify Duo",
-    status: "active",
-    price: 12.99,
-    category: "Music",
-    renewalDate: "2024-04-20",
-  },
-  {
-    id: "derv1ws0",
-    name: "Adobe Creative Cloud",
-    status: "active",
-    price: 59.99,
-    category: "Design",
-    renewalDate: "2024-04-25",
-  },
-  {
-    id: "5kma53ae",
-    name: "Vercel Pro",
-    status: "active",
-    price: 20.00,
-    category: "Dev Tools",
-    renewalDate: "2024-05-01",
-  },
-  {
-    id: "bhqecj4p",
-    name: "GitHub Copilot",
-    status: "active",
-    price: 10.00,
-    category: "Dev Tools",
-    renewalDate: "2024-05-05",
-  },
-  {
-    id: "zxcv1234",
-    name: "Midjourney",
-    status: "canceled",
-    price: 30.00,
-    category: "AI",
-    renewalDate: "2024-03-10",
-  },
-   {
-    id: "asdf5678",
-    name: "ChatGPT Plus",
-    status: "active",
-    price: 20.00,
-    category: "AI",
-    renewalDate: "2024-05-12",
-  },
-]
-
-export type Subscription = {
-  id: string
-  name: string
-  price: number
-  status: "active" | "canceled" | "past_due"
-  category: string
-  renewalDate: string
-}
-
-export const columns: ColumnDef<Subscription>[] = [
+export const getColumns = (removeSubscription: (id: string) => void): ColumnDef<Subscription>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -140,7 +74,7 @@ export const columns: ColumnDef<Subscription>[] = [
     cell: ({ row }) => {
         const status = row.getValue("status") as string
         return (
-            <Badge variant={status === "active" ? "default" : "secondary"}>
+            <Badge className={status === "active" ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30" : "bg-zinc-500/20 text-zinc-600 dark:text-zinc-400 border-zinc-500/30"}>
                 {status}
             </Badge>
         )
@@ -191,8 +125,8 @@ export const columns: ColumnDef<Subscription>[] = [
               Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit details</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">Delete subscription</DropdownMenuItem>
+            <EditSubscriptionDialog subscription={payment} />
+            <DropdownMenuItem className="text-red-600" onClick={() => removeSubscription(payment.id)}>Delete subscription</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -201,6 +135,7 @@ export const columns: ColumnDef<Subscription>[] = [
 ]
 
 export function SubscriptionsTable() {
+  const { subscriptions, removeSubscription } = useSubscriptions()
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -208,8 +143,10 @@ export function SubscriptionsTable() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
+  const columns = React.useMemo(() => getColumns(removeSubscription), [removeSubscription])
+
   const table = useReactTable({
-    data,
+    data: subscriptions,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -236,7 +173,7 @@ export function SubscriptionsTable() {
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm bg-background/50 border-emerald-500/30 focus-visible:ring-emerald-500 transition-all duration-300"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -266,7 +203,7 @@ export function SubscriptionsTable() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      <div className="glass-panel rounded-xl overflow-hidden border-emerald-500/20">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -292,6 +229,7 @@ export function SubscriptionsTable() {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="hover:bg-emerald-500/5 dark:hover:bg-emerald-500/10 transition-colors border-emerald-500/10"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

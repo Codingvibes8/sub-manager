@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/dashboard/app-sidebar"
 import { Separator } from "@/components/ui/separator"
+import { SubscriptionsProvider } from "@/components/subscriptions-provider"
 import {
   SidebarInset,
   SidebarProvider,
@@ -20,8 +21,9 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <SidebarProvider>
-      <AppSidebar />
+    <SubscriptionsProvider>
+      <SidebarProvider>
+        <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b px-4">
           <div className="flex items-center gap-2">
@@ -47,5 +49,6 @@ export default function DashboardLayout({
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </SubscriptionsProvider>
   )
 }

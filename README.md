@@ -1,8 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sub-Manager
+
+A Next.js web application for managing your subscriptions and recurring expenses. Built with modern web technologies and a beautiful UI.
+
+## Features
+
+* **Dashboard**: Get an overview of your subscriptions, total monthly spend, and upcoming renewals.
+* **Subscription Management**: Add, edit, and remove subscriptions.
+* **Analytics**: Visualize your spending habits over time with interactive charts.
+* **Modern Tech Stack**: Built with Next.js 15, React 19, and Tailwind CSS.
+* **Accessible UI**: Uses Radix UI components for high-quality, accessible interactive elements.
+
+## Tech Stack
+
+* **Framework**: [Next.js](https://nextjs.org/)
+* **UI Library**: [React](https://react.dev/)
+* **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+* **Components**: [Radix UI](https://www.radix-ui.com/)
+* **Forms**: [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/)
+* **Charts**: [Recharts](https://recharts.org/)
+* **Icons**: [Lucide React](https://lucide.dev/)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+* Node.js (v20 or higher recommended)
+* npm, yarn, or pnpm
+
+### Installation
+
+1. Clone the repository (if applicable) and navigate to the project directory:
+
+```bash
+cd sub-manager
+```
+
+2. Install the dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+3. Start the development server:
 
 ```bash
 npm run dev
@@ -10,27 +53,13 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* `npm run dev`: Starts the Next.js development server.
+* `npm run build`: Builds the application for production.
+* `npm run start`: Starts the production server.
+* `npm run lint`: Runs ESLint to catch and fix problems in the code.

@@ -1,6 +1,5 @@
 import { SubscriptionsTable } from "@/components/dashboard/subscriptions-table"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { AddSubscriptionDialog } from "@/components/dashboard/add-subscription-dialog"
 
 export default function SubscriptionsPage() {
   return (
@@ -8,9 +7,7 @@ export default function SubscriptionsPage() {
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Subscriptions</h2>
         <div className="flex items-center space-x-2">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" /> Add Subscription
-          </Button>
+          <AddSubscriptionDialog />
         </div>
       </div>
       <div className="hidden h-full flex-1 flex-col space-y-8 md:flex">

@@ -123,3 +123,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .glass {
+    @apply bg-background/60 backdrop-blur-lg border border-border/50 shadow-lg;
+  }
+  
+  .glass-panel {
+    @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-xl;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent;
+  }
+  
+  .btn-gradient {
+    @apply bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-400 hover:to-teal-500 transition-all duration-300 shadow-lg hover:shadow-emerald-500/25;
+  }
+  
+  .glow-hover {
+    @apply transition-all duration-300 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:border-emerald-500/50;
+  }
+}
