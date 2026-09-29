@@ -36,7 +36,7 @@ create table profiles (
   username text,
   full_name text,
   avatar_url text,
-  updated_at timestamp with time zone default timezone('utc'::text, now()
+  updated_at timestamp with time zone default timezone('utc'::text, now())
 );
 
 alter table profiles enable row level security;
@@ -60,7 +60,7 @@ create table email_preferences (
   renewal_reminders boolean not null default true,
   promotional_emails boolean not null default false,
   weekly_digest boolean not null default true,
-  updated_at timestamp with time zone default timezone('utc'::text, now()
+  updated_at timestamp with time zone default timezone('utc'::text, now())
 );
 
 alter table email_preferences enable row level security;

@@ -35,7 +35,7 @@ export async function signup(formData: FormData) {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/dashboard/subscriptions')
+  redirect('/verify-email')
 }
 
 export async function logout() {

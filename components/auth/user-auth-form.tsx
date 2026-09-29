@@ -38,11 +38,37 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         return
       }
 
-      router.push("/dashboard/subscriptions")
+      router.push("/verify-email")
       router.refresh()
     } catch {
       setError("Network error. Please check your connection and try again.")
     } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function onOAuthClick() {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const res = await fetch("/api/auth/oauth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider: "github" }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error ?? "Could not authenticate with GitHub. Please try again.")
+        setIsLoading(false)
+        return
+      }
+
+      window.location.href = data.url
+    } catch {
+      setError("Network error. Please check your connection and try again.")
       setIsLoading(false)
     }
   }
@@ -108,7 +134,13 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading} className="w-full">
+      <Button
+        variant="outline"
+        type="button"
+        disabled={isLoading}
+        className="w-full"
+        onClick={onOAuthClick}
+      >
         {isLoading ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
