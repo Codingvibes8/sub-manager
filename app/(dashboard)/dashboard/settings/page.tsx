@@ -9,8 +9,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { createClient } from "@/utils/supabase/client"
+import BillingTab from "./billing-tab"
 
-type Tab = "profile" | "account" | "appearance" | "notifications"
+type Tab = "profile" | "account" | "appearance" | "notifications" | "billing"
 
 type ProfileData = {
   username: string
@@ -190,6 +191,7 @@ export default function SettingsPage() {
     { id: "account", label: "Account" },
     { id: "appearance", label: "Appearance" },
     { id: "notifications", label: "Notifications" },
+    { id: "billing", label: "Billing" },
   ]
 
   if (isLoading) {
@@ -438,6 +440,8 @@ export default function SettingsPage() {
               </CardContent>
             </Card>
           )}
+
+          {activeTab === "billing" && <BillingTab />}
         </div>
       </div>
     </div>

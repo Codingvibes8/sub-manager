@@ -3,7 +3,6 @@
 import * as React from "react"
 import {
   CreditCard,
-  Frame,
   LifeBuoy,
   Map,
   PieChart,
@@ -29,7 +28,6 @@ import {
 } from "@/components/ui/sidebar"
 import { NotificationBell } from "@/components/dashboard/notification-bell"
 
-// This is sample data.
 const data = {
   navMain: [
     {
@@ -68,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">SubManager</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate text-xs">Free Plan</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -99,10 +97,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <div className="p-4">
-            <div className="rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 p-4 text-xs shadow-lg backdrop-blur-md">
-                <p className="font-semibold text-emerald-700 dark:text-emerald-300">Pro Plan</p>
-                <p className="text-emerald-600/70 dark:text-emerald-400/70 mt-1">Expires in 12 days</p>
-            </div>
+          <a href="/pricing" className="block rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 p-4 text-xs shadow-lg backdrop-blur-md hover:border-emerald-500/40 transition-colors">
+            <p className="font-semibold text-emerald-700 dark:text-emerald-300">Upgrade to Team</p>
+            <p className="text-emerald-600/70 dark:text-emerald-400/70 mt-1">14-day free trial</p>
+          </a>
         </div>
       </SidebarFooter>
       <SidebarRail />

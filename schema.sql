@@ -36,6 +36,7 @@ create table profiles (
   username text,
   full_name text,
   avatar_url text,
+  onboarding_completed boolean not null default false,
   updated_at timestamp with time zone default timezone('utc'::text, now())
 );
 

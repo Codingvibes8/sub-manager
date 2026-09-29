@@ -44,6 +44,7 @@ type TeamContextType = {
   isLoading: boolean
   userRole: TeamRole | null
   isOwner: boolean
+  isPaidPlan: boolean
   refreshTeam: () => Promise<void>
   inviteMember: (email: string, role: TeamRole) => Promise<{ error?: string }>
   updateMemberRole: (memberId: string, role: TeamRole) => Promise<{ error?: string }>
@@ -59,6 +60,7 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
   const [invites, setInvites] = useState<TeamInvite[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [userRole, setUserRole] = useState<TeamRole | null>(null)
+  const [isPaidPlan, setIsPaidPlan] = useState(false)
   const supabase = createClient()
 
   const fetchTeam = useCallback(async () => {
@@ -97,6 +99,20 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
         setInvites(inviteData)
       }
     }
+
+    try {
+      const res = await fetch("/api/billing/status")
+      if (res.ok) {
+        const billingData = await res.json()
+        const sub = billingData.subscription
+        if (sub && (sub.status === "active" || sub.status === "trialing")) {
+          setIsPaidPlan(true)
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch billing status:", error)
+    }
+
     setIsLoading(false)
   }, [supabase])
 
@@ -172,6 +188,7 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         userRole,
         isOwner,
+        isPaidPlan,
         refreshTeam: fetchTeam,
         inviteMember,
         updateMemberRole,

@@ -1,8 +1,13 @@
+"use client"
+
+import { useState, useEffect, Suspense } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Check, X } from "lucide-react"
+import { Check, X, Loader2 } from "lucide-react"
 import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { toast } from "sonner"
 
 const plans = [
   {
@@ -38,14 +43,12 @@ const plans = [
     description:
       "Every feature unlocked. Stop flying blind on SaaS spend and start optimizing it.",
     highlights: [
-      { text: "Up to 3 team members", included: false },
-      { text: "10 subscriptions per workspace", included: false },
+      { text: "Unlimited team members", included: true },
+      { text: "Unlimited subscriptions", included: true },
       { text: "Renewal alerts (email, 7-day)", included: true },
       { text: "Monthly spending chart", included: true },
       { text: "Category breakdown", included: true },
       { text: "CSV export", included: true },
-      { text: "Unlimited team members", included: true },
-      { text: "Unlimited subscriptions", included: true },
       { text: "PDF spend reports", included: true },
       { text: "Renewal reminder automation", included: true },
       { text: "Cancel-link database", included: true },
@@ -77,12 +80,6 @@ const plans = [
   },
 ]
 
-export const metadata = {
-  title: "Pricing — SubManager",
-  description:
-    "Free for 1 user. Team plan at $12/user/month unlocks unlimited subscriptions, renewal automation, PDF reports, and the cancel-link database.",
-}
-
 function FeatureRow({ highlight }: { highlight: (typeof plans)[0]["highlights"][0] }) {
   return (
     <div className="flex items-center gap-3 text-sm">
@@ -98,7 +95,61 @@ function FeatureRow({ highlight }: { highlight: (typeof plans)[0]["highlights"][
   )
 }
 
-export default function PricingPage() {
+function PricingPageContent() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [currentPlan, setCurrentPlan] = useState<string>("free")
+
+  useEffect(() => {
+    fetch("/api/billing/status")
+      .then((res) => {
+        if (res.ok) {
+          setIsLoggedIn(true)
+          return res.json()
+        }
+        return null
+      })
+      .then((data) => {
+        if (data?.subscription) {
+          setCurrentPlan(data.subscription.plan)
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  const handleTeamClick = async () => {
+    if (!isLoggedIn) {
+      router.push("/signup?plan=team")
+      return
+    }
+
+    if (currentPlan === "team") {
+      router.push("/dashboard/settings?tab=billing")
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: "team" }),
+      })
+      const data = await res.json()
+      if (res.ok && data.url) {
+        window.location.href = data.url
+      } else {
+        toast.error(data.error || "Failed to start checkout")
+        setIsLoading(false)
+      }
+    } catch {
+      toast.error("Failed to start checkout")
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       {/* Navbar */}
@@ -181,16 +232,36 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <Button
-                  className={`w-full mt-6 ${
-                    plan.popular
-                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                      : "bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
-                  }`}
-                  asChild
-                >
-                  <Link href={plan.href}>{plan.cta}</Link>
-                </Button>
+                {plan.name === "Team" ? (
+                  <Button
+                    className={`w-full mt-6 ${
+                      plan.popular
+                        ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        : "bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
+                    }`}
+                    onClick={handleTeamClick}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : currentPlan === "team" ? (
+                      "Manage subscription"
+                    ) : (
+                      plan.cta
+                    )}
+                  </Button>
+                ) : (
+                  <Button
+                    className={`w-full mt-6 ${
+                      plan.popular
+                        ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        : "bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
+                    }`}
+                    asChild
+                  >
+                    <Link href={plan.href}>{plan.cta}</Link>
+                  </Button>
+                )}
 
                 {plan.name === "Free" && (
                   <p className="mt-3 text-center text-xs text-muted-foreground">
@@ -257,5 +328,13 @@ export default function PricingPage() {
         </div>
       </footer>
     </div>
+  )
+}
+
+export default function PricingPage() {
+  return (
+    <Suspense>
+      <PricingPageContent />
+    </Suspense>
   )
 }
