@@ -27,6 +27,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { NotificationBell } from "@/components/dashboard/notification-bell"
 
 // This is sample data.
 const data = {
@@ -73,6 +74,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        <div className="px-2 pb-2">
+          <NotificationBell />
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

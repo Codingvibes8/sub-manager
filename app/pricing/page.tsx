@@ -13,7 +13,7 @@ const plans = [
     description:
       "Start tracking your team's subscriptions for free. Upgrade when your team grows.",
     highlights: [
-      { text: "Up to 3 team members", included: true },
+      { text: "Up to 1 team member", included: true },
       { text: "10 subscriptions per workspace", included: true },
       { text: "Renewal alerts (email, 7-day)", included: true },
       { text: "Monthly spending chart", included: true },
@@ -80,7 +80,7 @@ const plans = [
 export const metadata = {
   title: "Pricing — SubManager",
   description:
-    "Free for up to 3 users. Team plan at $12/user/month unlocks unlimited subscriptions, renewal automation, PDF reports, and the cancel-link database.",
+    "Free for 1 user. Team plan at $12/user/month unlocks unlimited subscriptions, renewal automation, PDF reports, and the cancel-link database.",
 }
 
 function FeatureRow({ highlight }: { highlight: (typeof plans)[0]["highlights"][0] }) {

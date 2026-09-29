@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { OverviewChart } from "@/components/dashboard/overview-chart"
 import { useSubscriptions } from "@/components/subscriptions-provider"
+import { ExportButtons } from "@/components/dashboard/export-buttons"
 
 const COLORS = [
   "#10b981",
@@ -104,12 +105,15 @@ export default function AnalyticsPage() {
     <div className="flex-1 space-y-4 p-4 pt-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Analytics</h2>
-        <div className="text-right text-sm text-muted-foreground">
-          Total tracked:{" "}
-          <span className="font-medium text-foreground">
-            {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(total)}
-            /month
-          </span>
+        <div className="flex items-center gap-4">
+          <div className="text-right text-sm text-muted-foreground">
+            Total tracked:{" "}
+            <span className="font-medium text-foreground">
+              {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(total)}
+              /month
+            </span>
+          </div>
+          <ExportButtons />
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">

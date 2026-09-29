@@ -6,6 +6,18 @@ export const metadata = {
   title: "SubManager — Stop Wasting Money on Unused Software Licenses",
   description:
     "SubManager gives office managers, engineering leads, and agency ops teams a single dashboard to track every SaaS seat, catch renewals before they hit, and cancel the tools nobody uses.",
+  openGraph: {
+    title: "SubManager — Stop Wasting Money on Unused Software Licenses",
+    description:
+      "SubManager gives office managers, engineering leads, and agency ops teams a single dashboard to track every SaaS seat, catch renewals before they hit, and cancel the tools nobody uses.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SubManager — Stop Wasting Money on Unused Software Licenses",
+    description:
+      "SubManager gives office managers, engineering leads, and agency ops teams a single dashboard to track every SaaS seat, catch renewals before they hit, and cancel the tools nobody uses.",
+  },
 }
 
 export default function MarketingPage() {

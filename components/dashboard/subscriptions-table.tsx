@@ -37,6 +37,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { useSubscriptions, type Subscription } from "@/components/subscriptions-provider"
 import { EditSubscriptionDialog } from "@/components/dashboard/edit-subscription-dialog"
+import { ExportButtons } from "@/components/dashboard/export-buttons"
 
 export const getColumns = (removeSubscription: (id: string) => void): ColumnDef<Subscription>[] => [
   {
@@ -175,12 +176,14 @@ export function SubscriptionsTable() {
           }
           className="max-w-sm bg-background/50 border-emerald-500/30 focus-visible:ring-emerald-500 transition-all duration-300"
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+        <div className="ml-auto flex items-center gap-2">
+          <ExportButtons />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {table
               .getAllColumns()
@@ -202,6 +205,7 @@ export function SubscriptionsTable() {
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
       <div className="glass-panel rounded-xl overflow-hidden border-emerald-500/20">
         <Table>
