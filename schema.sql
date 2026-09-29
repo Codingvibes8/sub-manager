@@ -29,3 +29,50 @@ create policy "Users can update their own subscriptions."
 create policy "Users can delete their own subscriptions."
   on subscriptions for delete
   using ( auth.uid() = user_id );
+
+-- Create the profiles table
+create table profiles (
+  id uuid references auth.users on delete cascade primary key,
+  username text,
+  full_name text,
+  avatar_url text,
+  updated_at timestamp with time zone default timezone('utc'::text, now()
+);
+
+alter table profiles enable row level security;
+
+create policy "Users can view their own profile."
+  on profiles for select
+  using ( auth.uid() = id );
+
+create policy "Users can insert their own profile."
+  on profiles for insert
+  with check ( auth.uid() = id );
+
+create policy "Users can update their own profile."
+  on profiles for update
+  using ( auth.uid() = id );
+
+-- Create the email_preferences table
+create table email_preferences (
+  id uuid references auth.users on delete cascade primary key,
+  product_updates boolean not null default true,
+  renewal_reminders boolean not null default true,
+  promotional_emails boolean not null default false,
+  weekly_digest boolean not null default true,
+  updated_at timestamp with time zone default timezone('utc'::text, now()
+);
+
+alter table email_preferences enable row level security;
+
+create policy "Users can view their own email preferences."
+  on email_preferences for select
+  using ( auth.uid() = id );
+
+create policy "Users can insert their own email preferences."
+  on email_preferences for insert
+  with check ( auth.uid() = id );
+
+create policy "Users can update their own email preferences."
+  on email_preferences for update
+  using ( auth.uid() = id );
