@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { WelcomeStep } from "./steps/welcome-step"
 import { ProfileStep } from "./steps/profile-step"
 import { AddSubscriptionStep } from "./steps/add-subscription-step"
+import { CsvImportStep } from "./steps/csv-import-step"
 import { PreferencesStep } from "./steps/preferences-step"
 import { CompleteStep } from "./steps/complete-step"
 
@@ -14,6 +15,7 @@ const STEPS = [
   { id: "welcome", title: "Welcome" },
   { id: "profile", title: "Profile" },
   { id: "subscription", title: "Add Subscription" },
+  { id: "csv-import", title: "Import CSV" },
   { id: "preferences", title: "Preferences" },
   { id: "complete", title: "All Set" },
 ]
@@ -52,8 +54,10 @@ export function OnboardingWizard() {
       case 2:
         return <AddSubscriptionStep onNext={goNext} onBack={goBack} onSkip={handleSkip} />
       case 3:
-        return <PreferencesStep onNext={goNext} onBack={goBack} />
+        return <CsvImportStep onNext={goNext} onBack={goBack} onSkip={handleSkip} />
       case 4:
+        return <PreferencesStep onNext={goNext} onBack={goBack} />
+      case 5:
         return <CompleteStep onComplete={handleComplete} />
       default:
         return null

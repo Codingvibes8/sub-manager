@@ -79,7 +79,15 @@ export function SubscriptionsProvider({ children }: { children: React.ReactNode 
         category: data.category,
         renewalDate: data.renewal_date,
       }
-      setSubscriptions(prev => [newSub, ...prev])
+      setSubscriptions(prev => {
+        const isFirst = prev.length === 0
+        if (isFirst && typeof window !== "undefined") {
+          import("@/lib/analytics").then(({ trackEvent }) => {
+            trackEvent("first_subscription_added", { name: sub.name, price: sub.price })
+          })
+        }
+        return [newSub, ...prev]
+      })
     }
   }
 

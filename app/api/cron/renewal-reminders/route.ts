@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/utils/supabase/server"
 import { addDays, format, parseISO, differenceInDays } from "date-fns"
+import { sendRenewalReminderEmail } from "@/lib/email"
 
 const CRON_SECRET = process.env.CRON_SECRET || ""
 
@@ -17,7 +18,7 @@ export async function POST(req: NextRequest) {
 
   const { data: subs, error } = await supabase
     .from("subscriptions")
-    .select("*, email_preferences(*)")
+    .select("*, email_preferences(*), profiles(email)")
     .eq("status", "active")
     .gte("renewal_date", today)
     .lte("renewal_date", sevenDaysFromNow)
@@ -57,18 +58,42 @@ export async function POST(req: NextRequest) {
       continue
     }
 
+    const userEmail = sub.profiles?.email
+    if (!userEmail) {
+      results.errors.push(`No email found for user of subscription: ${sub.name}`)
+      results.skipped++
+      continue
+    }
+
+    let emailSent = false
+    try {
+      await sendRenewalReminderEmail({
+        to: userEmail,
+        subscriptionName: sub.name,
+        renewalDate: sub.renewal_date,
+        daysUntil,
+        price: sub.price,
+        category: sub.category || "Other",
+      })
+      emailSent = true
+    } catch (emailError) {
+      results.errors.push(
+        `Failed to send email for ${sub.name}: ${emailError instanceof Error ? emailError.message : "Unknown error"}`
+      )
+    }
+
     const { error: insertError } = await supabase.from("renewal_alerts").insert({
       user_id: sub.user_id,
       subscription_id: sub.id,
       alert_type: daysUntil <= 1 ? "critical" : daysUntil <= 3 ? "warning" : "info",
       days_until: daysUntil,
       alert_date: today,
-      sent: true,
+      sent: emailSent,
     })
 
     if (insertError) {
       results.errors.push(`Failed to create alert for ${sub.name}: ${insertError.message}`)
-    } else {
+    } else if (emailSent) {
       results.emailsSent++
     }
   }

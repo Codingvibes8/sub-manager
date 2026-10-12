@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Check, X, Loader2 } from "lucide-react"
+import { Check, X, Loader2, Clock } from "lucide-react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
@@ -16,19 +16,17 @@ const plans = [
     price: "$0",
     period: "forever",
     description:
-      "Start tracking your team's subscriptions for free. Upgrade when your team grows.",
+      "Start tracking your subscriptions for free. Upgrade when you need team features.",
     highlights: [
-      { text: "Up to 1 team member", included: true },
-      { text: "10 subscriptions per workspace", included: true },
+      { text: "1 workspace", included: true },
+      { text: "Up to 10 subscriptions", included: true },
       { text: "Renewal alerts (email, 7-day)", included: true },
       { text: "Monthly spending chart", included: true },
       { text: "Category breakdown", included: true },
       { text: "CSV export", included: false },
-      { text: "Unlimited team members", included: false },
+      { text: "Team members", included: false },
       { text: "Unlimited subscriptions", included: false },
       { text: "PDF spend reports", included: false },
-      { text: "Renewal reminder automation", included: false },
-      { text: "Cancel-link database", included: false },
       { text: "Priority support", included: false },
     ],
     cta: "Start for free",
@@ -50,9 +48,7 @@ const plans = [
       { text: "Category breakdown", included: true },
       { text: "CSV export", included: true },
       { text: "PDF spend reports", included: true },
-      { text: "Renewal reminder automation", included: true },
-      { text: "Cancel-link database", included: true },
-      { text: "Priority support", included: false },
+      { text: "Priority support", included: true },
     ],
     cta: "Start Team trial",
     href: "/signup?plan=team",
@@ -60,23 +56,23 @@ const plans = [
   },
   {
     name: "Enterprise",
-    tagline: "For organizations with compliance, SSO, and audit requirements",
+    tagline: "For organizations with compliance needs",
     price: "Custom",
-    period: "contact us",
+    period: "coming soon",
     description:
-      "Everything in Team, plus SSO/SAML, audit logs, custom contracts, and a dedicated account manager.",
+      "SSO/SAML, audit logs, and custom contracts. Join the waitlist to be notified when we launch.",
     highlights: [
       { text: "Everything in Team", included: true },
-      { text: "SSO / SAML login", included: true },
-      { text: "Audit log (who changed what and when)", included: true },
-      { text: "Custom data retention policies", included: true },
-      { text: "Dedicated account manager", included: true },
-      { text: "Custom SLA", included: true },
-      { text: "On-premise / VPC deployment options", included: true },
+      { text: "SSO / SAML login", included: false },
+      { text: "Audit log", included: false },
+      { text: "Custom data retention policies", included: false },
+      { text: "Dedicated account manager", included: false },
+      { text: "Custom SLA", included: false },
     ],
-    cta: "Talk to sales",
-    href: "/contact",
+    cta: "Join waitlist",
+    href: "/contact?enterprise=true",
     popular: false,
+    comingSoon: true,
   },
 ]
 
@@ -192,7 +188,7 @@ function PricingPageContent() {
             Simple, transparent pricing
           </h1>
           <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
-            Start free. Upgrade when your team outgrows the free tier — no surprises, no per-seat bait and switch.
+            Start free. Upgrade when you need team features — no surprises, no per-seat bait and switch.
           </p>
         </div>
       </section>
@@ -207,11 +203,17 @@ function PricingPageContent() {
                 plan.popular
                   ? "border-emerald-500 shadow-lg shadow-emerald-500/10 scale-[1.02]"
                   : "border-transparent"
-              }`}
+              } ${plan.comingSoon ? "opacity-75" : ""}`}
             >
               {plan.popular && (
                 <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 px-3 py-0.5 text-xs font-semibold text-white">
                   Most Popular
+                </Badge>
+              )}
+              {plan.comingSoon && (
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-zinc-500 px-3 py-0.5 text-xs font-semibold text-white flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  Coming Soon
                 </Badge>
               )}
 
@@ -273,6 +275,11 @@ function PricingPageContent() {
                     14-day free trial. No credit card required.
                   </p>
                 )}
+                {plan.comingSoon && (
+                  <p className="mt-3 text-center text-xs text-muted-foreground">
+                    Join the waitlist to get notified at launch.
+                  </p>
+                )}
               </CardContent>
             </Card>
           ))}
@@ -283,10 +290,6 @@ function PricingPageContent() {
           <h2 className="text-2xl font-bold">FAQ</h2>
           <dl className="mt-8 space-y-6">
             {[
-              {
-                q: "What counts as a 'team member'?",
-                a: "Anyone you invite to your workspace with view or admin access. The free tier covers up to 3 members — perfect for small teams or freelancers with a client.",
-              },
               {
                 q: "What happens when I hit the 10-subscription limit on the free tier?",
                 a: "You keep all your data. You can view it, but you won't be able to add new subscriptions until you upgrade. Your existing subscriptions are never deleted.",
@@ -301,7 +304,7 @@ function PricingPageContent() {
               },
               {
                 q: "Where does my subscription data live?",
-                a: "In your own Supabase project. SubManager never sees your credentials, never stores your subscription data on our servers, and never sells your data. Your Supabase credentials are the only key.",
+                a: "In your own Supabase project. SubManager never sees your credentials, never stores your subscription data on our servers, and never sells your data.",
               },
               {
                 q: "Do you offer discounts for nonprofits or education?",

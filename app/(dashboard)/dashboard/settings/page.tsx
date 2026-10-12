@@ -9,9 +9,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { createClient } from "@/utils/supabase/client"
+import { Download, Trash2, AlertTriangle, Loader2 } from "lucide-react"
 import BillingTab from "./billing-tab"
 
-type Tab = "profile" | "account" | "appearance" | "notifications" | "billing"
+type Tab = "profile" | "account" | "appearance" | "notifications" | "billing" | "data"
 
 type ProfileData = {
   username: string
@@ -49,6 +50,10 @@ export default function SettingsPage() {
     weekly_digest: true,
   })
   const [isSavingPreferences, setIsSavingPreferences] = useState(false)
+
+  const [isExporting, setIsExporting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   const supabase = createClient()
 
@@ -186,12 +191,58 @@ export default function SettingsPage() {
     }
   }
 
+  async function handleExportData() {
+    setIsExporting(true)
+    try {
+      const res = await fetch("/api/settings/export")
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || "Export failed")
+      }
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = `submanager-export-${new Date().toISOString().split("T")[0]}.csv`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+      toast.success("Data exported successfully")
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to export data")
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  async function handleDeleteAccount() {
+    setIsDeleting(true)
+    try {
+      const res = await fetch("/api/settings/delete-account", { method: "DELETE" })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || "Deletion failed")
+      }
+
+      toast.success("Account deleted. You will be signed out.")
+      await supabase.auth.signOut()
+      window.location.href = "/"
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete account")
+      setIsDeleting(false)
+      setShowDeleteConfirm(false)
+    }
+  }
+
   const tabs: { id: Tab; label: string }[] = [
     { id: "profile", label: "Profile" },
     { id: "account", label: "Account" },
     { id: "appearance", label: "Appearance" },
     { id: "notifications", label: "Notifications" },
     { id: "billing", label: "Billing" },
+    { id: "data", label: "Data & Privacy" },
   ]
 
   if (isLoading) {
@@ -442,6 +493,95 @@ export default function SettingsPage() {
           )}
 
           {activeTab === "billing" && <BillingTab />}
+
+          {activeTab === "data" && (
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Export Your Data</CardTitle>
+                  <CardDescription>
+                    Download all your subscription data as a CSV file. You can export at any time.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Your export includes all subscriptions, including name, price, status, category, and renewal dates.
+                    </p>
+                    <Button
+                      onClick={handleExportData}
+                      disabled={isExporting}
+                      variant="outline"
+                    >
+                      {isExporting ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Download className="mr-2 h-4 w-4" />
+                      )}
+                      Export as CSV
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-red-200 dark:border-red-900">
+                <CardHeader>
+                  <CardTitle className="text-red-600 dark:text-red-400">Delete Account</CardTitle>
+                  <CardDescription>
+                    Permanently delete your account and all associated data. This action cannot be undone.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-950/20 rounded-lg">
+                      <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
+                      <div className="text-sm text-red-700 dark:text-red-300">
+                        <p className="font-medium">This will permanently delete:</p>
+                        <ul className="mt-1 list-disc pl-4 space-y-0.5">
+                          <li>All your subscriptions and renewal data</li>
+                          <li>Your profile and account settings</li>
+                          <li>Email preferences and notification history</li>
+                          <li>Team memberships (if any)</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    {!showDeleteConfirm ? (
+                      <Button
+                        variant="destructive"
+                        onClick={() => setShowDeleteConfirm(true)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete my account
+                      </Button>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <Button
+                          variant="destructive"
+                          onClick={handleDeleteAccount}
+                          disabled={isDeleting}
+                        >
+                          {isDeleting ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="mr-2 h-4 w-4" />
+                          )}
+                          Yes, delete everything
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() => setShowDeleteConfirm(false)}
+                          disabled={isDeleting}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@ const features = [
   },
   {
     title: "Renewal Alerts",
-    description: "Get alerted 7 days before any subscription renews. One-click 'cancel reminder' emails so you never auto-renew a tool nobody uses.",
+    description: "Get alerted 7 days before any subscription renews. Email reminders so you never auto-renew a tool nobody uses.",
     icon: BellRing,
     className: "md:col-span-1",
   },
@@ -28,13 +28,13 @@ const features = [
   },
   {
     title: "Vendor Discovery",
-    description: "Search our curated database of cancellation links, phone numbers, and retention-deal tips for the top 200 SaaS vendors. Canceling becomes a 30-second task, not a 30-minute hunt.",
+    description: "Quickly find cancellation links and contact information for common SaaS vendors. Canceling becomes a 30-second task, not a 30-minute hunt.",
     icon: FileSearch,
     className: "md:col-span-1",
   },
   {
     title: "Secure by Default",
-    description: "Your subscription data lives in your own Supabase project. We never see your credentials, we never sell your data, and everything is encrypted at rest.",
+    description: "Your subscription data lives in your own Supabase project. We never see your credentials and we never sell your data. Supabase provides encryption at rest and in transit.",
     icon: ShieldCheck,
     className: "md:col-span-3",
   },
